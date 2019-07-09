@@ -27,6 +27,43 @@ Moving Big Projects to Python 3
 
     So just call me Leonard.
 
+    I've been working with Python and web since 2001.
+
+----
+
+.. image:: images/cover.png
+    :height: 600px
+
+python3porting.com
+
+.. note::
+
+    And I wrote the book on how to move from Python 2 to Python 3.
+    It's open source, on github.
+
+----
+
+.. image:: images/magda_elenor.jpg
+    :class: left
+    :width: 70%
+
+.. image:: images/elenor_quince.jpg
+    :class: right
+    :width: 29.5%
+
+.. image:: images/cats.jpg
+    :class: left
+    :width: 50%
+
+.. image:: images/quince.jpg
+    :class: right
+    :width: 50%
+
+.. note::
+
+    I'm born in Sweden, but I live in Poland, with my
+    wife, daughter, cats and fruit trees.
+
 ----
 
 .. class:: blurb
@@ -44,8 +81,11 @@ and digital needs.
     We do the type of software that insurance companies use to deal with
     insurance policies and claims.
 
-    We are over a 100 people right now, we work remotely, and yes, we are hiring.
+    We work remotely, and yes, we are hiring.
     If you are looking for a job and want to work remotely, talk to me!
+    I'm new to the whole recruiting bit, but talk to me any way.
+
+    We are not running on Python 3 yet, it's still an ongoing effort.
 
 ----
 
@@ -54,7 +94,8 @@ and digital needs.
 
 .. note::
 
-    But I should also shoutout to Shoobx, where we successfully moved
+    But I should also shoutout to my previous job Shoobx,
+    where we successfully moved
     a large and insanely complex system to Python 3 last year.
 
 ----
@@ -79,7 +120,6 @@ and digital needs.
     You are running it on some old version of probably Django or Web2py.
     Possibly Turbogears, maybe even Zope!
 
-    Let's fast forward to the current time.
 
 ----
 
@@ -87,10 +127,10 @@ and digital needs.
     :width: 100%
 
 .. note::
-    Which apparently is the medieval.
-    And you have been bravely running away from Python 3 for years.
 
-    But, you can't run any longer. Time to face the monster.
+    But you have been bravely running away from Python 3 for years.
+
+    And, you can't run any longer. Time to face the monster.
     But don't fear the syntax errors, those are the easy parts, actually.
     The hard part is getting your old system into a state where it's easy to port.
 
@@ -131,7 +171,9 @@ Increase test coverage
 
     Some of these are optional, some are not.
 
-    You HAVE to have continuos integration to move to Python 3.
+    You HAVE to have tests to move to Python 3,
+    and you have to run those tests,
+    and that means that for any sizeable project you must have CI.
     I'll talk more of that later.
     Switching to Python 3 without a staging setup would also be insane.
 
@@ -154,6 +196,7 @@ Isolated production environment
 
     Containers are in now, that helps isolating,
     so you don't get weird interactions with new versions of OS packages.
+    For example docker.
 
 ----
 
@@ -166,10 +209,12 @@ Docker
     but I've just realized this the last few months,
     so I'll mention it because it's new to me!
 
-    If you, every time your package requirements change,
-    build a new docker image, including the virtual environment for the servers,
-    then if some new requirement change creates conflicts,
-    you don't notice that during deployment, but while building the packages!
+    If you use docker on production,
+    every time your package requirements change you must build a new docker image,
+    including the virtual environment for the servers.
+    So if some new requirement change creates conflicts,
+    you don't notice that during deployment,
+    but while building the packages!
     Yay, deployment didn't mess up production,
     it stopped before production was even touched!
 
@@ -209,9 +254,7 @@ Can you stop adding features?
 
     It depends very much on your business
     if you can take a time out from adding features to do the porting or not.
-    If you can, you can put everyone on doing it, which is great and will be faster.
-    It also means everyone feels involved.
-    But it still will take a few weeks at least. Maybe longer.
+     But it still will take a few weeks at least. Maybe longer.
     So can you stop adding features and stop firefighting that long?
 
 ----
@@ -287,12 +330,6 @@ Strategy: Slow and steady
     even though you run it on Python 2.
     And then, one day, you can finally switch and run it on Python 3.
 
-    This way is common, slow, more time intensive.
-    And also, if you have a 100 developers, getting all 100 onboard as one will be hard.
-    Since we are so many at BriteCore, and in addition everyone are remote,
-    this is what we are going to do.
-
-
 ----
 
 Slow and steady: Benefits
@@ -350,8 +387,8 @@ Still slow
 
 ----
 
-Time to start preparing
-=======================
+Stage 3: Preparing
+==================
 
 ----
 
@@ -375,10 +412,6 @@ Pin all versions
     by f ex comparing your pip freeze output with the requirements file.
     That way, you would get an error if you change one package
     that introduces new dependencies.
-
-    And once you have a production environment that is stable,
-    then it's time to move on to preparing for Python 3.
-    And the first thing you should do there is to
 
 ----
 
@@ -470,21 +503,6 @@ Call in the CI Gurus
     But you can't require ALL tests to pass under Python 3 initially,
     because then all your builds will fail and you can never merge anything.
 
-    At Shoobx we had tests that were very big.
-    The browser integration tests would typically run over night.
-    Running all those tests also under Python 3 would require twice the computing power,
-    making the tests runs twice as expensive. Not much fun.
-
-    What the clever people who did the CI at Shoobx did,
-    was to use the coverage information to see what tests covered which lines,
-    and when a pull request was done, we could use the diff to see
-    what lines and hence what tests were affected.
-    Then, for that PR we could run only the tests affected.
-
-    For master, of course, you would run everything.
-    But this lowered the time it would take to get integration tests on a branch run.
-    Unit tests of course are fast, always run all of them.
-
 ----
 
 Make your dev environment support Python 3
@@ -525,8 +543,8 @@ Are you using pickles? ARE YOU?
 
 ----
 
-Time to start fixing!
-=====================
+Stage 4: Fixing
+===============
 
 .. note::
 
@@ -585,11 +603,13 @@ One fixer at a time
 Port port port
 ==============
 
-The book is outdated, but free!
+.. image:: images/cover.png
+    :height: 500px
 
 .. note::
 
-    If you didn't write the migration tests before, do it now.
+    This is where the book finally is useful.
+    Because it's about this part, and this part only.
 
 ----
 
@@ -598,10 +618,14 @@ Push to staging
 
 Test it carefully, manually, with real data
 
+.. note::
+
+    If all tests pass, or maybe even bore all tests pass, try it on staging.
+
 ----
 
-Push to production
-==================
+Stage 5: Push to production
+===========================
 
 Be prepared to fall back if possible!
 
@@ -636,6 +660,9 @@ Clean up
 
 ----
 
+Stage 6: Clean the code
+=======================
+
 .. image:: images/funclean.jpg
     :width: 100%
 
@@ -652,5 +679,24 @@ Clean up
 
 ----
 
+Summary
+=======
+
+Stop firefighting
+
+Plan
+
+Prepare
+
+Fixing tests under Python 3
+
+Push to production
+
+Clean up the code
+
+----
+
 Questions?
 ==========
+
+britecore.com/careers
