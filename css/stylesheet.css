@@ -204,9 +204,9 @@ div.highlight.present {
     left: 42%;
 }
 
-.impress-on-step-4 .footer img {
+.impress-on-britecore .footer img {
     width: 80%;
-    top: -50px;
+    top: -20px;
     left: 10%;
 }
 
@@ -216,4 +216,8 @@ div.highlight.present {
 
 .larger {
     font-size: 48px;
+}
+
+div#firefighting p {
+    font-size: 280%;
 }

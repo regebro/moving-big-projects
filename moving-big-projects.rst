@@ -39,7 +39,7 @@ python3porting.com
 .. note::
 
     And I wrote the book on how to move from Python 2 to Python 3.
-    It's open source, on github.
+    It's open source, the source is on github.
 
 ----
 
@@ -65,6 +65,8 @@ python3porting.com
     wife, daughter, cats and fruit trees.
 
 ----
+
+:id: britecore
 
 .. class:: blurb
 
@@ -157,6 +159,10 @@ Step 1: Stop being a fire department!
 
 ----
 
+:id: firefighting
+
+Increase test coverage
+
 Continuos integration
 
 Use staging servers
@@ -165,34 +171,42 @@ Automatic deployment
 
 Monitoring
 
-Increase test coverage
-
 .. note::
 
     Some of these are optional, some are not.
 
     You HAVE to have tests to move to Python 3,
-    and you have to run those tests,
+    but tests also help with stability.
+    And you have to run those tests,
     and that means that for any sizeable project you must have CI.
     I'll talk more of that later.
+
     Switching to Python 3 without a staging setup would also be insane.
 
     Automatic deployment is a nice thing to get out of firefighting mode.
-    Deployment of a new release of the software should just be a push of the button.
-    Extra points if master is released and pushed to staging every night.
+    Deployment of a new release of the software should just be a
+    push of the button.
+    SaltStack can help there.
+    Extra points if master is released and pushed to staging every night,
+    so you know that your deployment is working.
 
-    Monitoring is good, and tests also help for stability.
+    Monitoring is good, you want to know that there is a problem
+    before your users know it.
 
 ----
 
 Isolated production environment
 ===============================
 
+Definitely Virtualenv
+
+Maybe containers
+
 .. note::
 
-    And there are some Python specific things we can do to harden production.
+    There are some Python specific things we can do to harden production.
     One thing is to run in some sort of isolated environment.
-    This typically means a virtualenv, or if you run Plone, a buildout.
+    This typically means a virtualenv, or buildout.
 
     Containers are in now, that helps isolating,
     so you don't get weird interactions with new versions of OS packages.
@@ -210,8 +224,9 @@ Docker
     so I'll mention it because it's new to me!
 
     If you use docker on production,
-    every time your package requirements change you must build a new docker image,
-    including the virtual environment for the servers.
+    every time your package requirements change you
+    must build a new docker image,
+    because that image includes the virtual environment for the servers.
     So if some new requirement change creates conflicts,
     you don't notice that during deployment,
     but while building the packages!
@@ -226,6 +241,10 @@ Docker
 .. image:: images/mindblown.gif
     :width: 100%
 
+.. note::
+
+    So with all these thing in place...
+
 ----
 
 .. image:: images/coffeebreak.jpg
@@ -233,7 +252,7 @@ Docker
 
 .. note::
 
-    So, your firefighters now can take it easy.
+    ... your firefighters now can take it easy.
 
 ----
 
@@ -254,7 +273,7 @@ Can you stop adding features?
 
     It depends very much on your business
     if you can take a time out from adding features to do the porting or not.
-     But it still will take a few weeks at least. Maybe longer.
+    But it still will take a few weeks at least. Maybe longer.
     So can you stop adding features and stop firefighting that long?
 
 ----
@@ -280,6 +299,8 @@ How big is your team?
 
     The famous mythical man-month remains mythical also with Python 3.
     Putting 50 developers on porting at the same time will not work.
+    They will end up being blocked by each other,
+    and you can't distribute the work properly.
     Ten isn't a problem, you can synchronize that, at least if they are
     in the same office. Maybe even 20, but no more than that.
     If your system is already split into multiple separate services
@@ -318,6 +339,12 @@ High risk
 
 All other work stops
 
+.. note::
+
+    So I don't recommend doing this.
+    If you feel you can move your project to Python 3 in one go,
+    then you would likely have done so already.
+
 ----
 
 Strategy: Slow and steady
@@ -325,7 +352,7 @@ Strategy: Slow and steady
 
 .. note::
 
-    For those reasons, porting big projects to Python 3 is usually done slowly and carefully.
+    So porting big projects to Python 3 is usually done slowly and carefully.
     You will port the code to code that runs on both Python 3 and Python 2,
     even though you run it on Python 2.
     And then, one day, you can finally switch and run it on Python 3.
@@ -385,10 +412,22 @@ You need dual version support
 
 Still slow
 
+.. note::
+
+    But all in all I think this is a good option for smaller teams.
+    Now, when in the following process you want to make the quick push is up to you.
+    At Shoobx we did it more or less at what I call stage 4,
+    ie the Preparing was done before.
+
 ----
 
 Stage 3: Preparing
 ==================
+
+.. note::
+
+    Because many things in this stage is nothing you
+    can put more than a few people on.
 
 ----
 
@@ -420,7 +459,7 @@ Increase test coverage (again)
 
 .. note::
 
-    Add even MORE tests.
+    Yes, add even MORE tests.
     And do coverage, so you know how many lines of code you are testing.
 
     What percentage of test coverage you want is really a matter of opinion.
@@ -430,7 +469,8 @@ Increase test coverage (again)
     100% is awesome, but is likely practically unobtainable.
     90-95% would be my target. You can bridge the gap somewhat by
     carefully reading all non-covered lines and looking for Python 2 syntax
-    on the non-covered lines, at some point that becomes easier than writing a test.
+    on the non-covered lines,
+    at some point that becomes easier than writing a test.
 
 ----
 
@@ -439,12 +479,17 @@ Mock gotchas
 
 .. note::
 
+    There is this philosophy in mocking that you should test each function
+    separately and that all calls from that function should be mocked out.
+
     For Python 3 it really is line coverage we are looking for.
     So mocking out most of the calls in a function is perfectly fine.
 
-    UNLESS, your mocking adds a method or function that no longer exists in Python 3.
-    Then you shot yourself in the foot, so be careful with that.
-    Integration testing is therefore also needed, you can't have just unit tests.
+    UNLESS, your mocking adds a method or function that no longer exists in Python 3!
+    The test will still pass,
+    because you are effectively mocking in the python 2 standard library.
+    So this type of testing is useless when porting to Python 3.
+    So if you do this, you need to have 95% coverage from your integration test.
 
 ----
 
