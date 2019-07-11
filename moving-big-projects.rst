@@ -19,28 +19,6 @@ Moving Big Projects to Python 3
 
     EuroPython, 2019
 
-.. note::
-
-    My name is very hard to pronounce.
-    In fact, almost every time somebody asks how my last name is pronounced,
-    I get self conscious and mispronounce it.
-
-    So just call me Leonard.
-
-    I've been working with Python and web since 2001.
-
-----
-
-.. image:: images/cover.png
-    :height: 600px
-
-python3porting.com
-
-.. note::
-
-    And I wrote the book on how to move from Python 2 to Python 3.
-    It's open source, the source is on github.
-
 ----
 
 .. image:: images/magda_elenor.jpg
@@ -61,8 +39,24 @@ python3porting.com
 
 .. note::
 
-    I'm born in Sweden, but I live in Poland, with my
-    wife, daughter, cats and fruit trees.
+    My name is Lennart, and  I'm born in Sweden,
+    but I live in Poland, with my wife, daughter, cats and fruit trees.
+
+    I have been using Python since Python 1.5.2, and
+    I have been working with Python and web since 2001.
+
+----
+
+.. image:: images/cover.png
+    :height: 600px
+
+python3porting.com
+
+.. note::
+
+    And I wrote the book on how to move from Python 2 to Python 3.
+    You can find it in both HTML and PDF on python3porting.com.
+    It's open source, the source is on github.
 
 ----
 
@@ -108,8 +102,17 @@ and digital needs.
 .. note::
 
     So, let's go back back to the stoneage,
-    when your company created some web based application,
-    and you did such a good job that it's still running!
+
+    Who had been using Python since before Python 3 was released? Hands up?
+    And who was been using it since before Python 2 was released?
+
+----
+
+.. image:: images/python-logo.svg
+    :width: 600px
+
+.. note::
+    Yeah, Python 1.5.2 represents! Best version ever!
 
 ----
 
@@ -117,11 +120,14 @@ and digital needs.
     :height: 600px
 
 .. note::
-    This is you, and this is your webframework.
+    This is you back in the stone age, and this is your framework.
 
-    You are running it on some old version of probably Django or Web2py.
+    You or your company created some Python application,
+    and you did such a good job that it's still running!
+
+    It's probably a webapp and you are probably running
+    it on some old version of probably Django or Web2py.
     Possibly Turbogears, maybe even Zope!
-
 
 ----
 
@@ -133,8 +139,21 @@ and digital needs.
     But you have been bravely running away from Python 3 for years.
 
     And, you can't run any longer. Time to face the monster.
-    But don't fear the syntax errors, those are the easy parts, actually.
-    The hard part is getting your old system into a state where it's easy to port.
+    Because next year Python 2 commits suicide.
+
+----
+
+.. image:: images/suicidesquad.gif
+    :width: 100%
+
+.. note::
+
+    But don't fear Python 3, it's actually a cuddly little rabbit.
+    And no, not the one from Life of Brian.
+
+    The hard part of porting is getting your old system
+    into a state where it's easy to port.
+    The porting itself is quite easy.
 
 ----
 
@@ -145,6 +164,8 @@ Step 1: Stop being a fire department!
     :width: 80%
 
 .. note::
+    The first thing you need to do is stop being a fire department.
+
     Many large organizations are constantly putting out fires.
     That's not a good situation to port to Python 3,
     because if the changes you do as a part of normal development breaks production,
@@ -155,7 +176,7 @@ Step 1: Stop being a fire department!
     So the first thing you need to do is to get out of firefighting mode.
     And that in itself is a whole talk,
     and I'm not the one to do that talk anyway.
-    But I'll quickly mention a few things I've seen DevOps do to fix this.
+    I'll quickly mention a few things I've seen DevOps do to fix this.
 
 ----
 
@@ -173,20 +194,20 @@ Monitoring
 
 .. note::
 
-    Some of these are optional, some are not.
+    This slide  assumes that your software is a service
+    of some sort, with a production environment and devops,
+    because that's all the fire fighting I know.
 
     You HAVE to have tests to move to Python 3,
     but tests also help with stability.
     And you have to run those tests,
     and that means that for any sizeable project you must have CI.
-    I'll talk more of that later.
+    I'll talk more about that later.
 
     Switching to Python 3 without a staging setup would also be insane.
 
-    Automatic deployment is a nice thing to get out of firefighting mode.
-    Deployment of a new release of the software should just be a
-    push of the button.
-    SaltStack can help there.
+    Automatic deployment is helpful.
+    Deployment of a new release of the software should just be a push of the button.
     Extra points if master is released and pushed to staging every night,
     so you know that your deployment is working.
 
@@ -229,7 +250,7 @@ Docker
     because that image includes the virtual environment for the servers.
     So if some new requirement change creates conflicts,
     you don't notice that during deployment,
-    but while building the packages!
+    but while building the docker images!
     Yay, deployment didn't mess up production,
     it stopped before production was even touched!
 
@@ -256,18 +277,160 @@ Docker
 
 ----
 
-Stage 2: Planning
+Stage 2: Preparing
+==================
+
+.. note::
+
+    When the firefighting is done, it's time to prepare.
+
+----
+
+Pin all versions
+================
+
+.. note::
+
+    To make sure that you know what you install,
+    you should pin all versions of all packages.
+
+----
+
+:id: pins
+
+.. code::
+
+    beautifulsoup4==4.6.0
+    amqp==1.4.7
+    boto==2.38.0
+    boto3==1.6.23
+    botocore==1.9.23
+    datadog==0.12.0
+    placebo==0.8.1
+    awscli==1.10.10
+    colorama==0.2.4
+    coverage==3.5.2
+    dropbox==7.2.1
+    epydoc==3.0.1
+    ezodf2==0.2.9
+
+.. note::
+
+    pip unfortunately has no flag I can find to require this.
+    One way to do this would be to verify in the install script
+    that what you installed matches the requirements file,
+    by f ex comparing your pip freeze output with the requirements file.
+    That way, you would get an error if you change one package
+    that introduces new dependencies.
+
+----
+
+:id: hashes
+
+.. code::
+
+    beautifulsoup4==4.6.0 --hash=sha256:7015e76bf32f1f574636c4288399a6de66
+    amqp==1.4.7 --hash=sha256:d5ab52b96c11a93324e4f8e5f35fac8a58e69eba0555
+    boto==2.38.0 --hash=sha256:758498c77f16e26b8b61af26f8d0dbb119b713f2d8d
+    boto3==1.6.23 --hash=sha256:f270f058f46aff9208fe29cffee79a46a7020cd186
+    botocore==1.9.23 --hash=sha256:fa84972784e55ae5f89c2d33b1b10b6ba028cb3
+    datadog==0.12.0 --hash=sha256:453facddea3bdce14bfe6518d65db8ec8f1b3309
+    placebo==0.8.1 --hash=sha256:6c15ce4a6be158603550fa211f7ce7cc0327c5e45
+    awscli==1.10.10 --hash=sha256:f8d53c0e3211353a6d4eefb82432996eff535ad4
+    colorama==0.2.4 --hash=sha256:f1a742e49fbb0838ab478339597580d8a5869f9f
+    coverage==3.5.2 --hash=sha256:22f8828c83958efc343666926362eb4a6cb38610
+    dropbox==7.2.1 --hash=sha256:34fe06b735358f4454d59e2ea3dadff63fa03e076
+    epydoc==3.0.1 --hash=sha256:87f191ef04783f8871ce085f8527c8519a74e401c7
+    ezodf2==0.2.9 --hash=sha256:bda2added62f3c3c02c9385fcaaf7a2beed3f3b42a
+
+.. note::
+
+    What you can do with pip is to add hashes to the requirements,
+    if you add one hash, it will require hashes for all packages,
+    effectively making sure no new requirement goes unpinned.
+
+    This makes for huge requirements files with loads of hashes in them.
+    But it also adds extra security.
+
+----
+
+Increase test coverage (again)
+==============================
+
+.. note::
+
+    Yes, add even MORE tests.
+    And do coverage, so you know how many lines of code you are testing.
+
+    What percentage of test coverage you want is really a matter of opinion.
+    But it is very good to cover a line, because lines that aren't covered may
+    contain hidden Python 2 code.
+
+    100% is awesome, but is likely practically unobtainable.
+    90-95% would be my target. You can bridge the gap somewhat by
+    carefully reading all non-covered lines and looking for Python 2 syntax
+    on the non-covered lines,
+    at some point that becomes easier than writing a test.
+
+----
+
+Mock gotchas
+============
+
+.. note::
+
+    There is this philosophy in mocking that you should test each function
+    separately and that all calls from that function should be mocked out.
+
+    But then you only test that the function did what you told it to do.
+    You don't test that it WORKS, and if the API you call changes,
+    then the test will still pass.
+    This is obviously a problem with Python 3, because you are effectively
+    mocking in python 2 calls and behavior.
+    So this type of testing is useless when porting to Python 3.
+    If you do this, you need to have 95% coverage from your integration test.
+
+----
+
+Upgrade dependencies
+====================
+
+Upgrade all packages
+
+Replace or port anything that isn't Python 3 compatible
+
+.. note::
+
+    Make sure you have the latest Python 2 compatible version of all your dependencies.
+    Then make sure all your dependencies are Python 3 compatible.
+    You may have to replace, or worst case, port, some of your dependencies at this point.
+
+    This stage can take a significant time, especially if you have not been keeping
+    your dependencies up to date.
+
+----
+
+Stage 3: Planning
 =================
 
 .. note::
 
-    When the firefighting is done, it's time to actually think about porting,
-    and do some planning. And then I have three questions for you.
+    What, planning after preparing?
+    Well, you can plan before preparing as well,
+    it's OK. Which order you do this in is optional.
+
+    But planning is a lot about if you let everyone
+    do the porting work, or if you only have a small team,
+    and the preparing in step 2 is nothing you can have 15
+    people working on in any case, so you only need to plan
+    at this stage. You can do it earlier, of course.
+
+    When planning, I have three questions for you.
 
 ----
 
-Can you stop adding features?
-=============================
+1. Can you stop adding features?
+================================
 
 .. note::
 
@@ -278,8 +441,8 @@ Can you stop adding features?
 
 ----
 
-Do you have magic?
-==================
+2. Do you have magic?
+=====================
 
 .. note::
 
@@ -292,8 +455,8 @@ Do you have magic?
 
 ----
 
-How big is your team?
-=====================
+3. How big is your team?
+========================
 
 .. note::
 
@@ -421,93 +584,8 @@ Still slow
 
 ----
 
-Stage 3: Preparing
-==================
-
-.. note::
-
-    Because many things in this stage is nothing you
-    can put more than a few people on.
-
-----
-
-Pin all versions
+Stage 4: Porting
 ================
-
-.. note::
-
-    To make sure that you know what you install,
-    you should pin all versions of all packages.
-    pip unfortunately has no flag I can find to require this.
-    What you can do is to add hashes to the requirements,
-    if you add one hash, it will require hashes for all packages,
-    effectively making sure no new requirement goes unpinned.
-
-    This makes for huge requirements files with loads of hashes in them.
-    But it also adds extra security.
-
-    Another way to do this would be to verify in the install script
-    that what you installed matches the requirements file,
-    by f ex comparing your pip freeze output with the requirements file.
-    That way, you would get an error if you change one package
-    that introduces new dependencies.
-
-----
-
-Increase test coverage (again)
-==============================
-
-.. note::
-
-    Yes, add even MORE tests.
-    And do coverage, so you know how many lines of code you are testing.
-
-    What percentage of test coverage you want is really a matter of opinion.
-    But it is very good to cover a line, because lines that aren't covered may
-    contain hidden Python 2 code.
-
-    100% is awesome, but is likely practically unobtainable.
-    90-95% would be my target. You can bridge the gap somewhat by
-    carefully reading all non-covered lines and looking for Python 2 syntax
-    on the non-covered lines,
-    at some point that becomes easier than writing a test.
-
-----
-
-Mock gotchas
-============
-
-.. note::
-
-    There is this philosophy in mocking that you should test each function
-    separately and that all calls from that function should be mocked out.
-
-    For Python 3 it really is line coverage we are looking for.
-    So mocking out most of the calls in a function is perfectly fine.
-
-    UNLESS, your mocking adds a method or function that no longer exists in Python 3!
-    The test will still pass,
-    because you are effectively mocking in the python 2 standard library.
-    So this type of testing is useless when porting to Python 3.
-    So if you do this, you need to have 95% coverage from your integration test.
-
-----
-
-Upgrade dependencies
-====================
-
-Upgrade all packages
-
-Replace or port anything that isn't Python 3 compatible
-
-.. note::
-
-    Make sure you have the latest Python 2 compatible version of all your dependencies.
-    Then make sure all your dependencies are Python 3 compatible.
-    You may have to replace, or worst case, port, some of your dependencies at this point.
-
-    This stage can take a significant time, especially if you have not been keeping
-    your dependencies up to date.
 
 ----
 
@@ -518,11 +596,9 @@ Setup your testing for Python 3
 
     It's now time to start running your tests under Python 3,
     and this will obviously always fail.
-    If you have decided to start with a big sprint where everyone is helping,
-    you need to simply start digging into fixing those tests.
-
-    But if you are doing this gradually, there is a significant risk that
-    people introduce incompatible code faster than you can fix it.
+    But that's OK. What you want to do here is to prevent people
+    from adding more Python 3 incompatible code while others are trying
+    to add Python 3 compatibility.
 
 ----
 
@@ -531,8 +607,8 @@ Setup your testing for Python 3
 
 .. note::
 
-    In that case you will never finish.
-    So, to stop that you need to do some sort of magic with your tests.
+    Because if you allow that you will never finish.
+    And the trick to stopping this is in CI.
 
 ----
 
@@ -542,7 +618,7 @@ Call in the CI Gurus
 
 .. note::
 
-    The best way to do this is to let your CI system keep track
+    You need to let your CI system keep track
     of which tests that once DID pass under Python 3,
     and if a test that should pass no longer passes under Python 3, flag the test run as failed.
     But you can't require ALL tests to pass under Python 3 initially,
@@ -588,45 +664,40 @@ Are you using pickles? ARE YOU?
 
 ----
 
-Stage 4: Fixing
-===============
-
-.. note::
-
-    Next step is to fix all import and syntax errors,
-    so your test runner can actually find the tests.
-
-----
-
 Modernize
 =========
 
+Backwards compatible 2to3 fixers
+
+Six
+===
+
+**The** compatibility layer
+
 .. note::
 
-    Modernize is a set of 2to3 fixers that generate backwards compatible code, mostly with six.
-    I would recommend run all the Modernize fixers on your code, one by one, and review those changes.
-    Because fixers aren't perfect.
+    I'm sure you know what 2to3 is, it's a tool that will refactor your code from Python 2 to Python 3 code.
+    It doesn't do everything, but it's helpful.
+    Modernize is an extension that generate Python 2 compatible code,
+    mostly by using six, which is the compatibility library between Python2 and Python 3.
 
-    On smaller codebases I completely recommend just running Modernize once on everything
-    and see if the tests still run. But on any larger code base it won't still run,
-    and with the massive changes you get, it can be hard to figure out what went wrong.
-    It's better to do it carefully.
-
-    You might think you want to run it file by file instead, but there's a reason to not do that.
+    There's also another compatibility layer called python-future which
+    has it's own extension called futurize.
+    Python-future inserts a lot of magic to make the code compatible in both Python 2 and Python 3,
+    and that magic has bitten me several times,
+    so my recommendation is to avoid python-future.
 
 ----
 
-Import errors everywhere
-========================
+.. image:: images/errors.jpg
+    :width: 100%
 
 .. note::
 
-    Your first errors will be import errors.
+    Your first errors will be syntax and import errors.
     That's because some module with have a syntax error,
     and the modules trying to import from that module will have some sort of syntax error.
     So the first thing you want to do is fix those syntax errors.
-    And if you are then running ALL fixers on a file with syntax errors,
-    you might end up introducing another error, meaning you still get the same import errors.
 
 ----
 
@@ -635,18 +706,18 @@ One fixer at a time
 
 .. note::
 
-    In the beginning, until you get rid of import errors,
-    you might even want to run one fixer at a time on one file at a time.
+    If you run 2to3 on any larger code base it won't still run,
+    and with the massive changes you get, it can be hard to figure out what went wrong.
+    It's better to do it carefully.
 
-    Once you have gotten rid of all import errors,
     which also means you are rid of all the syntax errors,
     then you can start porting for real,
     because now you will have tests that can fail, or pass.
 
 ----
 
-Port port port
-==============
+Fix fix fix
+===========
 
 .. image:: images/cover.png
     :height: 500px
@@ -665,7 +736,7 @@ Test it carefully, manually, with real data
 
 .. note::
 
-    If all tests pass, or maybe even bore all tests pass, try it on staging.
+    If all tests pass, or maybe even before all tests pass, try it on staging.
 
 ----
 
