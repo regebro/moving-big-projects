@@ -90,9 +90,9 @@ and digital needs.
 
 .. note::
 
-    But I should also shoutout to my previous job Shoobx,
-    where we successfully moved
-    a large and insanely complex system to Python 3 last year.
+    But I should also shout out to my previous job Shoobx,
+    where we successfully moved a large and insanely
+    complex system to Python 3 last year.
 
 ----
 
@@ -101,18 +101,7 @@ and digital needs.
 
 .. note::
 
-    So, let's go back back to the stoneage,
-
-    Who had been using Python since before Python 3 was released? Hands up?
-    And who was been using it since before Python 2 was released?
-
-----
-
-.. image:: images/python-logo.svg
-    :width: 600px
-
-.. note::
-    Yeah, Python 1.5.2 represents! Best version ever!
+    So, let's go back back to the stoneage.
 
 ----
 
@@ -126,8 +115,8 @@ and digital needs.
     and you did such a good job that it's still running!
 
     It's probably a webapp and you are probably running
-    it on some old version of probably Django or Web2py.
-    Possibly Turbogears, maybe even Zope!
+    it on some old version of maybe Web2py maybe Turbogears,
+    maybe even Zope!
 
 ----
 
@@ -136,9 +125,9 @@ and digital needs.
 
 .. note::
 
-    But you have been bravely running away from Python 3 for years.
+    And you have been bravely running away from Python 3 for years.
 
-    And, you can't run any longer. Time to face the monster.
+    But you can't run any longer. Time to face the monster.
     Because next year Python 2 commits suicide.
 
 ----
@@ -148,8 +137,19 @@ and digital needs.
 
 .. note::
 
-    But don't fear Python 3, it's actually a cuddly little rabbit.
-    And no, not the one from Life of Brian.
+    But don't fear Python 3,
+    it's not The Killer Rabbit of Caerbannog,
+    it's just a regular old Python.
+
+----
+
+Embrace the Serpent
+===================
+
+.. image:: images/hugasnake.jpg
+    :width: 80%
+
+.. note::
 
     The hard part of porting is getting your old system
     into a state where it's easy to port.
@@ -359,13 +359,10 @@ Increase test coverage (again)
 
 .. note::
 
-    Yes, add even MORE tests.
-    And do coverage, so you know how many lines of code you are testing.
-
-    What percentage of test coverage you want is really a matter of opinion.
     But it is very good to cover a line, because lines that aren't covered may
     contain hidden Python 2 code.
 
+    What percentage of test coverage you want is really a matter of opinion.
     100% is awesome, but is likely practically unobtainable.
     90-95% would be my target. You can bridge the gap somewhat by
     carefully reading all non-covered lines and looking for Python 2 syntax
@@ -626,44 +623,6 @@ Call in the CI Gurus
 
 ----
 
-Make your dev environment support Python 3
-==========================================
-
-.. note::
-
-    Do you have scripts to set up a development environment?
-    Or are you using docker? Something else?
-    In any case, that environment should be able to be built under Python 2 or Python 3 or both.
-    Any build scripts you have need to support both versions,
-    any auxilary scripts you have also need to do that.
-
-    At BriteCore we for example have scripts that help you copy test databases,
-    set up docker images etc. It's usually easier if they support Python 2 and Python 3
-    first, so you don't have to keep two environments going.
-    Sometimes the dev help scripts already run in a separate virtualenv,
-    and then you might be able to port them later.
-    But then again, if they are separate, you might want to do them first as practice!
-
-----
-
-Write data migration tests
-==========================
-
-Do you get text strings when you expect text strings?
-
-Are non-ascii chÃ©racters interpreted corrÃ¶ctly?
-
-Are you loading data from disk at some point?
-
-Are you using pickles? ARE YOU?
-
-.. note::
-
-    You should take data that is created with the software running on Python 2,
-    and write tests to make sure you get the right data in Python 3.
-
-----
-
 Modernize
 =========
 
@@ -706,13 +665,20 @@ One fixer at a time
 
 .. note::
 
-    If you run 2to3 on any larger code base it won't still run,
-    and with the massive changes you get, it can be hard to figure out what went wrong.
+    If you run modernize on any larger code base,
+    the system won't still work after that,
+    and with the massive changes you get,
+    it can be hard to figure out what went wrong.
     It's better to do it carefully.
 
-    which also means you are rid of all the syntax errors,
-    then you can start porting for real,
-    because now you will have tests that can fail, or pass.
+    Therefore, you should run one fixer at a time.
+    Find the cause of the error you have,
+    and if there is a fixer for that, run that fixer.
+    Maybe even on just that one file.
+    Big changes get confusing when they fail.
+
+    But manually fixing each single import or syntax error is boring.
+    So use the modernize fixers to help alleviate the boredom.
 
 ----
 
@@ -726,6 +692,51 @@ Fix fix fix
 
     This is where the book finally is useful.
     Because it's about this part, and this part only.
+
+    The only difficult bits here is if you have deep magic,
+    as mentioned before.
+
+    As you get more confident, and more things work,
+    you can run fixers on more files in one go,
+    but if you are many people doing the porting you risk merge conflicts.
+
+----
+
+Don't forget the your dev environment
+=====================================
+
+.. note::
+
+    Do you have scripts to set up a development environment?
+    Or are you using docker? Something else?
+    In any case, that environment should be able to be built under Python 2 or Python 3 or both.
+    Any build scripts you have need to support both versions,
+    any auxilary scripts you have also need to do that.
+
+    At BriteCore we for example have scripts that help you copy test databases,
+    set up docker images etc. It's usually easier if they support Python 2 and Python 3
+    first, so you don't have to keep two environments going.
+    Sometimes the dev help scripts already run in a separate virtualenv,
+    and then you might be able to port them later.
+    But then again, if they are separate, you might want to do them first as practice!
+
+----
+
+Write data migration tests
+==========================
+
+Do you get text strings when you expect text strings?
+
+Are non-ascii chÃ©racters interpreted corrÃ¶ctly?
+
+Are you loading data from disk at some point?
+
+Are you using pickles? ARE YOU?
+
+.. note::
+
+    You should take data that is created with the software running on Python 2,
+    and write tests to make sure you get the right data in Python 3.
 
 ----
 
@@ -800,11 +811,11 @@ Summary
 
 Stop firefighting
 
-Plan
-
-Prepare
+Prepare + Plan
 
 Fixing tests under Python 3
+
+Push to staging
 
 Push to production
 
