@@ -1,6 +1,6 @@
 :skip-help: true
 :css: css/stylesheet.css
-:title: How to diff XML
+:title: Moving Big Projects to Python 3
 
 .. footer::
 
@@ -13,11 +13,11 @@ Moving Big Projects to Python 3
 
 .. class:: name
 
-    Lennart Regebro
+    Lennart Regebro, Architect
 
 .. class:: location
 
-    EuroPython, 2019
+    PyCon US, 2020
 
 ----
 
@@ -40,23 +40,10 @@ Moving Big Projects to Python 3
 .. note::
 
     My name is Lennart, and  I'm born in Sweden,
-    but I live in Poland, with my wife, daughter, cats and fruit trees.
+    but I live in Poland, with my wife, daughter, three cats and way too many fruit trees.
 
     I have been using Python since Python 1.5.2, and
     I have been working with Python and web since 2001.
-
-----
-
-.. image:: images/cover.png
-    :height: 600px
-
-python3porting.com
-
-.. note::
-
-    And I wrote the book on how to move from Python 2 to Python 3.
-    You can find it in both HTML and PDF on python3porting.com.
-    It's open source, the source is on github.
 
 ----
 
@@ -77,11 +64,7 @@ and digital needs.
     We do the type of software that insurance companies use to deal with
     insurance policies and claims.
 
-    We work remotely, and yes, we are hiring.
-    If you are looking for a job and want to work remotely, talk to me!
-    I'm new to the whole recruiting bit, but talk to me any way.
-
-    We are not running on Python 3 yet, it's still an ongoing effort.
+    We are not fully on Python 3 yet, the core system is still Python 2.7.
 
 ----
 
@@ -92,7 +75,25 @@ and digital needs.
 
     But I should also shout out to my previous job Shoobx,
     where we successfully moved a large and insanely
-    complex system to Python 3 last year.
+    complex system to Python 3 in 2018.
+
+----
+
+.. image:: images/cover.png
+    :height: 600px
+
+python3porting.com
+
+.. note::
+
+    And I wrote the book on how to move from Python 2 to Python 3.
+    You can find it in both HTML and PDF on python3porting.com.
+    It's open source, the source is on github.
+
+    But this talk isn't about that book.
+    Because that book is concerned with differences in code.
+    And not only has those differences grown smaller since that book first came out.
+    Changing the code is actually the easy part.
 
 ----
 
@@ -101,7 +102,7 @@ and digital needs.
 
 .. note::
 
-    So, let's go back back to the stoneage.
+    But let's start at the beginning, back in the stoneage.
 
 ----
 
@@ -112,7 +113,7 @@ and digital needs.
     This is you back in the stone age, and this is your framework.
 
     You or your company created some Python application,
-    and you did such a good job that it's still running!
+    and did such a good job that it's still running!
 
     It's probably a webapp and you are probably running
     it on some old version of maybe Web2py maybe Turbogears,
@@ -126,39 +127,225 @@ and digital needs.
 .. note::
 
     And you have been bravely running away from Python 3 for years.
-
-    But you can't run any longer. Time to face the monster.
-    Because next year Python 2 commits suicide.
-
-----
-
-.. image:: images/suicidesquad.gif
-    :width: 100%
-
-.. note::
+    But you can't run any longer, because this year Python 2's
+    brave suicide plan sprung into action.
 
     But don't fear Python 3,
     it's not The Killer Rabbit of Caerbannog,
-    it's just a regular old Python.
 
 ----
-
-Embrace the Serpent
-===================
 
 .. image:: images/hugasnake.jpg
     :width: 80%
 
 .. note::
 
-    The hard part of porting is getting your old system
-    into a state where it's easy to port.
-    The porting itself is quite easy.
+    it's just a regular old Python.
+
+    It's time to hug the snake.
+    But how to go about it, that is the question.
 
 ----
 
-Step 1: Stop being a fire department!
-=====================================
+The Stages of Porting
+=====================
+
+1. Stop firefighting
+
+2. Preparing
+
+3. Porting
+
+4. Push to production
+
+5. Cleanup
+
+.. note::
+
+    I'd say there are five stages of porting,and and the start hard and get easier.
+    And as you see, the first and hardest stage has absolutely nothing to do with Python 3.
+    The preparing stage can be equally tricky,
+    especially if you haven't kept your dependencies up to date.
+    Porting can be easy, and can be tricky,
+    and that depends both on how magic your code is and how large your team is.
+    Pushing Python 3 to production tends to require several attempts,
+    but isn't otherwise very hard, and the cleanup is very easy.
+
+----
+
+Strategies for porting
+======================
+
+.. note::
+
+    But before we dive into that we need to discuss the general strategy for porting,
+    because this affects both the preparing and the porting stage.
+
+    There are basically two strategies you can use when moving
+    a project to Python 3, and they aren't even mutually exclusive,
+    you can do both.
+
+    Which is best depends on if you can stop adding features for a while,
+    how big your team is, and how magical your code is.
+
+----
+
+1. Can you stop adding features?
+================================
+
+.. note::
+
+    It depends very much on your business
+    if you can take a time out from adding features to do the porting or not.
+    But it still will take a few weeks at least. Maybe longer.
+    So can you stop adding features and stop firefighting that long?
+
+----
+
+2. How big is your team?
+========================
+
+.. note::
+
+    The famous mythical man-month remains mythical also with Python 3.
+    Putting 50 developers on porting at the same time will not work.
+    They will end up being blocked by each other,
+    and you can't distribute the work properly.
+    Ten isn't a problem, you can synchronize that, at least if they are
+    in the same office. Maybe even 20, but no more than that.
+    If your system is already split into multiple separate services
+    that run separately, then you can probably put each team on porting their bit separately,
+    so then you are already ahead of the game, but most of these big systems are monoliths.
+
+----
+
+3. Do you have magic?
+=====================
+
+.. note::
+
+    And if some parts of your code is doing deep magic, it can be very hard to port.
+    And then the few of your Python gods that actually understand that code,
+    will be busy with that, when everything else already works.
+    Or, it's so deeply integrated in the code that nobody can actually port their bits
+    until that deep magic is fixed.
+    In both of those cases, everyone that are supposed to port to Python 3 will be blocked.
+
+----
+
+Strategy: One big push!
+=======================
+
+.. note::
+
+    You don't have deep magic.
+    You can stop adding features.
+    You have less than 20 developers.
+
+    Then you can do it all in one go.
+
+----
+
+One big push: Benefits
+======================
+
+Takes less time
+
+Less work in total
+
+You can aim directly for Python 3 code
+
+----
+
+One big push: Drawbacks
+=======================
+
+High risk
+
+All other work stops
+
+.. note::
+
+    So I don't recommend doing this.
+    If you feel you can move your project to Python 3 in one go,
+    then you would likely have done so already.
+
+----
+
+Strategy: Slow and steady
+=========================
+
+.. note::
+
+    So porting big projects to Python 3 is usually done slowly and carefully.
+    You will port the code to code that runs on both Python 3 and Python 2,
+    even though you run it on Python 2.
+    And then, one day, you can finally switch and run it on Python 3.
+
+----
+
+Slow and steady: Benefits
+=========================
+
+Low risk
+
+Doesn't disrupt normal operations
+
+----
+
+Slow and steady: Drawbacks
+==========================
+
+More work
+
+Longer total time
+
+You need dual version support
+
+----
+
+Strategy: Mix it up!
+====================
+
+.. note::
+
+    If you have a development team small enough to fit into one big country house,
+    you can start with a Python 3 sprint for all the developers,
+    but not aim for Python 3, but aim for a Python 2/3 compatible code.
+    That way, when they come back half done,
+    you can switch to have a dedicated team do the last bit,
+    or just have people do it when there is no critical work.
+
+    This is what we did at Shoobx.
+
+----
+
+Mix: Benefits
+=============
+
+Low risk
+
+Only disrupts normal operation briefly
+
+Everyone gets onboard and feels involved
+
+----
+
+Mix: Drawbacks
+==============
+
+You need dual version support
+
+Still slow
+
+.. note::
+
+    But all in all I think this is a good option if you have less than 20 developers.
+
+----
+
+Stage 1: Stop being a fire department!
+======================================
 
 .. image:: images/firefighting.jpg
     :width: 80%
@@ -188,6 +375,8 @@ Continuos integration
 
 Use staging servers
 
+Containers/Docker or similar
+
 Automatic deployment
 
 Monitoring
@@ -216,68 +405,7 @@ Monitoring
 
 ----
 
-Isolated production environment
-===============================
-
-Definitely Virtualenv
-
-Maybe containers
-
-.. note::
-
-    There are some Python specific things we can do to harden production.
-    One thing is to run in some sort of isolated environment.
-    This typically means a virtualenv, or buildout.
-
-    Containers are in now, that helps isolating,
-    so you don't get weird interactions with new versions of OS packages.
-    For example docker.
-
-----
-
-Docker
-======
-
-.. note::
-
-    This is probably going to be obvious to most of you,
-    but I've just realized this the last few months,
-    so I'll mention it because it's new to me!
-
-    If you use docker on production,
-    every time your package requirements change you
-    must build a new docker image,
-    because that image includes the virtual environment for the servers.
-    So if some new requirement change creates conflicts,
-    you don't notice that during deployment,
-    but while building the docker images!
-    Yay, deployment didn't mess up production,
-    it stopped before production was even touched!
-
-    In addition, you can then use those images on CI, and even to develop on,
-    so you know that developers run the same environment as production!
-
-----
-
-.. image:: images/mindblown.gif
-    :width: 100%
-
-.. note::
-
-    So with all these thing in place...
-
-----
-
-.. image:: images/coffeebreak.jpg
-    :width: 100%
-
-.. note::
-
-    ... your firefighters now can take it easy.
-
-----
-
-Stage 2: Preparing
+Stage 3: Preparing
 ==================
 
 .. note::
@@ -354,12 +482,12 @@ Pin all versions
 
 ----
 
-Increase test coverage (again)
-==============================
+Increase test coverage
+======================
 
 .. note::
 
-    But it is very good to cover a line, because lines that aren't covered may
+    It is very good to cover a line, because lines that aren't covered may
     contain hidden Python 2 code.
 
     What percentage of test coverage you want is really a matter of opinion.
@@ -376,16 +504,20 @@ Mock gotchas
 
 .. note::
 
-    There is this philosophy in mocking that you should test each function
-    separately and that all calls from that function should be mocked out.
+    There exists this philosophy in unit tests that you should test each function
+    separately and that all calls to outside the module should be mocked out.
+    Some people even refuse to call it a unit test if this isn't done.
 
-    But then you only test that the function did what you told it to do.
-    You don't test that it WORKS, and if the API you call changes,
+    But if you do this, then you only test that the function did what you told it to do.
+    You don't test that it WORKS. For example, if the API you call changes,
     then the test will still pass.
-    This is obviously a problem with Python 3, because you are effectively
-    mocking in python 2 calls and behavior.
+    This is obviously a problem with Python 3, because you will effectively
+    be mocking in Python 2 behavior.
     So this type of testing is useless when porting to Python 3.
-    If you do this, you need to have 95% coverage from your integration test.
+    It does little more than checking the syntax,
+    and all you need for a syntax check is to import the module.
+    If you do this kinds of unit test mocking,
+    you need to have 95% coverage from your integration tests.
 
 ----
 
@@ -407,182 +539,45 @@ Replace or port anything that isn't Python 3 compatible
 
 ----
 
-Stage 3: Planning
-=================
+Port or decouple the build scripts
+==================================
 
 .. note::
 
-    What, planning after preparing?
-    Well, you can plan before preparing as well,
-    it's OK. Which order you do this in is optional.
-
-    But planning is a lot about if you let everyone
-    do the porting work, or if you only have a small team,
-    and the preparing in step 2 is nothing you can have 15
-    people working on in any case, so you only need to plan
-    at this stage. You can do it earlier, of course.
-
-    When planning, I have three questions for you.
+    Usually you have some sort of tool to build a test or development environment.
+    More often or not, that tool is in Python.
+    It typically import the app you are to port.
+    That means that to port the app, you first need to port the build tool,
+    but to port the build tool you need to port the app.
 
 ----
 
-1. Can you stop adding features?
-================================
-
-.. note::
-
-    It depends very much on your business
-    if you can take a time out from adding features to do the porting or not.
-    But it still will take a few weeks at least. Maybe longer.
-    So can you stop adding features and stop firefighting that long?
-
-----
-
-2. Do you have magic?
-=====================
-
-.. note::
-
-    And if some parts of your code is doing deep magic, it can be very hard to port.
-    And then the few of your Python gods that actually understand that code,
-    will be busy with that, when everything else already works.
-    Or, it's so deeply integrated in the code that nobody can actually port their bits
-    until that deep magic is fixed.
-    In both of those cases, everyone that are supposed to port to Python 3 will be blocked.
-
-----
-
-3. How big is your team?
-========================
-
-.. note::
-
-    The famous mythical man-month remains mythical also with Python 3.
-    Putting 50 developers on porting at the same time will not work.
-    They will end up being blocked by each other,
-    and you can't distribute the work properly.
-    Ten isn't a problem, you can synchronize that, at least if they are
-    in the same office. Maybe even 20, but no more than that.
-    If your system is already split into multiple separate services
-    that run separately, then you can probably put each team on porting their bit separately,
-    so then you are already ahead of the game, but most of these big systems are monoliths.
-
-----
-
-Strategy: One big push!
-=======================
-
-.. note::
-
-    You don't have deep magic.
-    You can stop adding features.
-
-    Then you can do it all in one go.
-
-----
-
-One big push: Benefits
-======================
-
-Takes less time
-
-Less work in total
-
-You can aim directly for Python 3 code
-
-----
-
-One big push: Drawbacks
-=======================
-
-High risk
-
-All other work stops
-
-.. note::
-
-    So I don't recommend doing this.
-    If you feel you can move your project to Python 3 in one go,
-    then you would likely have done so already.
-
-----
-
-Strategy: Slow and steady
+Porting the build scripts
 =========================
 
 .. note::
 
-    So porting big projects to Python 3 is usually done slowly and carefully.
-    You will port the code to code that runs on both Python 3 and Python 2,
-    even though you run it on Python 2.
-    And then, one day, you can finally switch and run it on Python 3.
+    It's a nice catch 22,
+    and that means someone must first fix all the syntax errors under Python 3,
+    so that the build scripts at least can import the app.
+    And that's not something you can put a whole team on.
+    Therefore it's a part of the preparation stage,
+    and in practice that means you have to support both Python 2 and Python 3 with your app.
 
 ----
 
-Slow and steady: Benefits
-=========================
-
-Low risk
-
-Doesn't disrupt normal operations
-
-----
-
-Slow and steady: Drawbacks
-==========================
-
-More work
-
-Longer total time
-
-You need dual version support
-
-----
-
-Strategy: Mix it up!
-====================
+Decouped build scripts still need Python 3
+==========================================
 
 .. note::
 
-    If you have a development team small enough to fit into one big country house,
-    you can start with a Python 3 sprint for all the developers,
-    but not aim for Python 3, but aim for a Python 2/3 compatible code.
-    That way, when they come back half done, you can switch to have a dedicated team do the last bit,
-    or just have people do it when there is no critical work.
-
-    This is what we did at Shoobx.
-
-----
-
-Mix: Benefits
-=============
-
-Low risk
-
-Only disrupts normal operation briefly
-
-Everyone gets onboard and feels involved
-
-----
-
-Mix: Drawbacks
-==============
-
-You need dual version support
-
-Still slow
-
-.. note::
-
-    But all in all I think this is a good option for smaller teams.
-    Now, when in the following process you want to make the quick push is up to you.
-    At Shoobx we did it more or less at what I call stage 4,
-    ie the Preparing was done before.
-
-----
-
-Stage 4: Porting
-================
+    As an alternative you can decouple the build scripts
+    so that they don't need to import the app.
+    Or maybe the build scripts already are so decoupled that they don't import the app,
+    or are written in something that isn't Python.
+    You might also have configuration files, maybe Docker or Saltstack.
+    Then all these scripts need to support Python 3,
+    so that they can build your development and test environments with Python 3 or Python 2.
 
 ----
 
@@ -604,45 +599,56 @@ Setup your testing for Python 3
 
 .. note::
 
-    Because if you allow that you will never finish.
+    Because if you allow that sort of backsliding you will never finish.
     And the trick to stopping this is in CI.
 
 ----
 
-Call in the CI Gurus
-====================
-
+Gradual CI coverage
+===================
 
 .. note::
 
     You need to let your CI system keep track
     of which tests that once DID pass under Python 3,
-    and if a test that should pass no longer passes under Python 3, flag the test run as failed.
-    But you can't require ALL tests to pass under Python 3 initially,
-    because then all your builds will fail and you can never merge anything.
+    and flag the test run as failed if one of those tests failed.
+    But tests that always failed under Python 3?
+    They should be allowed to fail.
+
+    And be careful to keep this on.
+    At Shoobx we had to disable it temporarily for reasons I forgot,
+    and of course we forgot to enable it until several months later.
+    Hundreds of tests had started failing on Python 3 in the mean time.
+    IIRC it only took a few days to get back on track.
 
 ----
 
-Modernize
-=========
+Stage 4: Porting
+================
 
-Backwards compatible 2to3 fixers
+----
+
+Tools
+=====
+
+2to3
 
 Six
-===
 
-**The** compatibility layer
+Modernize
 
 .. note::
 
-    I'm sure you know what 2to3 is, it's a tool that will refactor your code from Python 2 to Python 3 code.
+    I'm sure you know what 2to3 is,
+    it's a tool that will refactor your code from Python 2 to Python 3 code.
     It doesn't do everything, but it's helpful.
     Modernize is an extension that generate Python 2 compatible code,
     mostly by using six, which is the compatibility library between Python2 and Python 3.
 
     There's also another compatibility layer called python-future which
     has it's own extension called futurize.
-    Python-future inserts a lot of magic to make the code compatible in both Python 2 and Python 3,
+    Python-future inserts a lot of magic to make the code
+    compatible with both Python 2 and Python 3,
     and that magic has bitten me several times,
     so my recommendation is to avoid python-future.
 
@@ -655,7 +661,7 @@ Six
 
     Your first errors will be syntax and import errors.
     That's because some module with have a syntax error,
-    and the modules trying to import from that module will have some sort of syntax error.
+    and the modules trying to import from that module then get an import error.
     So the first thing you want to do is fix those syntax errors.
 
 ----
@@ -731,7 +737,7 @@ Are non-ascii chÃ©racters interpreted corrÃ¶ctly?
 
 Are you loading data from disk at some point?
 
-Are you using pickles? ARE YOU?
+Expert level: Using Pickles!
 
 .. note::
 
@@ -811,7 +817,7 @@ Summary
 
 Stop firefighting
 
-Prepare + Plan
+Prepare
 
 Fixing tests under Python 3
 
