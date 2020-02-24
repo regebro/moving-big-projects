@@ -98,20 +98,10 @@ python3porting.com
 ----
 
 .. image:: images/stoneage.jpg
-    :width: 800px
-
-.. note::
-
-    But let's start at the beginning, back in the stoneage.
-
-----
-
-.. image:: images/grok.png
     :height: 600px
 
 .. note::
-    This is you back in the stone age, and this is your framework.
-
+    But let's start at the beginning, back in the stoneage.
     You or your company created some Python application,
     and did such a good job that it's still running!
 
@@ -127,8 +117,7 @@ python3porting.com
 .. note::
 
     And you have been bravely running away from Python 3 for years.
-    But you can't run any longer, because this year Python 2's
-    brave suicide plan sprung into action.
+    But you can't run any longer.
 
     But don't fear Python 3,
     it's not The Killer Rabbit of Caerbannog,
@@ -162,7 +151,7 @@ The Stages of Porting
 
 .. note::
 
-    I'd say there are five stages of porting,and and the start hard and get easier.
+    I'd say there are five stages of porting,and they start hard and get easier.
     And as you see, the first and hardest stage has absolutely nothing to do with Python 3.
     The preparing stage can be equally tricky,
     especially if you haven't kept your dependencies up to date.
@@ -170,177 +159,6 @@ The Stages of Porting
     and that depends both on how magic your code is and how large your team is.
     Pushing Python 3 to production tends to require several attempts,
     but isn't otherwise very hard, and the cleanup is very easy.
-
-----
-
-Strategies for porting
-======================
-
-.. note::
-
-    But before we dive into that we need to discuss the general strategy for porting,
-    because this affects both the preparing and the porting stage.
-
-    There are basically two strategies you can use when moving
-    a project to Python 3, and they aren't even mutually exclusive,
-    you can do both.
-
-    Which is best depends on if you can stop adding features for a while,
-    how big your team is, and how magical your code is.
-
-----
-
-1. Can you stop adding features?
-================================
-
-.. note::
-
-    It depends very much on your business
-    if you can take a time out from adding features to do the porting or not.
-    But it still will take a few weeks at least. Maybe longer.
-    So can you stop adding features and stop firefighting that long?
-
-----
-
-2. How big is your team?
-========================
-
-.. note::
-
-    The famous mythical man-month remains mythical also with Python 3.
-    Putting 50 developers on porting at the same time will not work.
-    They will end up being blocked by each other,
-    and you can't distribute the work properly.
-    Ten isn't a problem, you can synchronize that, at least if they are
-    in the same office. Maybe even 20, but no more than that.
-    If your system is already split into multiple separate services
-    that run separately, then you can probably put each team on porting their bit separately,
-    so then you are already ahead of the game, but most of these big systems are monoliths.
-
-----
-
-3. Do you have magic?
-=====================
-
-.. note::
-
-    And if some parts of your code is doing deep magic, it can be very hard to port.
-    And then the few of your Python gods that actually understand that code,
-    will be busy with that, when everything else already works.
-    Or, it's so deeply integrated in the code that nobody can actually port their bits
-    until that deep magic is fixed.
-    In both of those cases, everyone that are supposed to port to Python 3 will be blocked.
-
-----
-
-Strategy: One big push!
-=======================
-
-.. note::
-
-    You don't have deep magic.
-    You can stop adding features.
-    You have less than 20 developers.
-
-    Then you can do it all in one go.
-
-----
-
-One big push: Benefits
-======================
-
-Takes less time
-
-Less work in total
-
-You can aim directly for Python 3 code
-
-----
-
-One big push: Drawbacks
-=======================
-
-High risk
-
-All other work stops
-
-.. note::
-
-    So I don't recommend doing this.
-    If you feel you can move your project to Python 3 in one go,
-    then you would likely have done so already.
-
-----
-
-Strategy: Slow and steady
-=========================
-
-.. note::
-
-    So porting big projects to Python 3 is usually done slowly and carefully.
-    You will port the code to code that runs on both Python 3 and Python 2,
-    even though you run it on Python 2.
-    And then, one day, you can finally switch and run it on Python 3.
-
-----
-
-Slow and steady: Benefits
-=========================
-
-Low risk
-
-Doesn't disrupt normal operations
-
-----
-
-Slow and steady: Drawbacks
-==========================
-
-More work
-
-Longer total time
-
-You need dual version support
-
-----
-
-Strategy: Mix it up!
-====================
-
-.. note::
-
-    If you have a development team small enough to fit into one big country house,
-    you can start with a Python 3 sprint for all the developers,
-    but not aim for Python 3, but aim for a Python 2/3 compatible code.
-    That way, when they come back half done,
-    you can switch to have a dedicated team do the last bit,
-    or just have people do it when there is no critical work.
-
-    This is what we did at Shoobx.
-
-----
-
-Mix: Benefits
-=============
-
-Low risk
-
-Only disrupts normal operation briefly
-
-Everyone gets onboard and feels involved
-
-----
-
-Mix: Drawbacks
-==============
-
-You need dual version support
-
-Still slow
-
-.. note::
-
-    But all in all I think this is a good option if you have less than 20 developers.
 
 ----
 
@@ -361,124 +179,77 @@ Stage 1: Stop being a fire department!
     Also, all your developers will be too busy putting out fires to port things.
 
     So the first thing you need to do is to get out of firefighting mode.
-    And that in itself is a whole talk,
-    and I'm not the one to do that talk anyway.
-    I'll quickly mention a few things I've seen DevOps do to fix this.
+    And that in itself is a whole talk, or maybe three,
+    and I'm not the right person to do that talk.
+    I'll quickly mention a few things I've seen help.
+    They are all focus on web services, because that's all I know.
 
 ----
 
 :id: firefighting
 
-Increase test coverage
-
-Continuos integration
-
-Use staging servers
-
-Containers/Docker or similar
-
-Automatic deployment
+Fighting web service fires
+==========================
 
 Monitoring
 
+Continuos integration
+
 .. note::
 
-    This slide  assumes that your software is a service
-    of some sort, with a production environment and devops,
-    because that's all the fire fighting I know.
+    Good monitoring with notifications is crucial,
+    you want to know that there is a problem before your users tell you.
 
     You HAVE to have tests to move to Python 3,
     but tests also help with stability.
     And you have to run those tests,
     and that means that for any sizeable project you must have CI.
-    I'll talk more about that later.
 
-    Switching to Python 3 without a staging setup would also be insane.
+----
+
+Web service stability
+=====================
+
+Predictable environment
+
+Use staging servers
+
+Automatic deployment
+
+.. note::
+
+    Make sure your environment is predictable,
+    that means pinning all package versions including dependencies of dependencies,
+    maybe even containerize, using docker or similar.
+    Having the same development, test and production environment is a big benefit.
+
+    And you of course need staging servers to test releases before going to production.
 
     Automatic deployment is helpful.
     Deployment of a new release of the software should just be a push of the button.
     Extra points if master is released and pushed to staging every night,
     so you know that your deployment is working.
 
-    Monitoring is good, you want to know that there is a problem
-    before your users know it.
+----
+
+Elite Firefighting Assault team
+===============================
+
+.. note::
+
+    And have a focus on trying to figure out in which areas you are having problems.
+    If your best people are all busy fighting fires,
+    there is nobody available to figure out why you keep having fires.
+    In that case, make sure some people are dedicated to increasing stability.
 
 ----
 
-Stage 3: Preparing
+Stage 2: Preparing
 ==================
 
 .. note::
 
     When the firefighting is done, it's time to prepare.
-
-----
-
-Pin all versions
-================
-
-.. note::
-
-    To make sure that you know what you install,
-    you should pin all versions of all packages.
-
-----
-
-:id: pins
-
-.. code::
-
-    beautifulsoup4==4.6.0
-    amqp==1.4.7
-    boto==2.38.0
-    boto3==1.6.23
-    botocore==1.9.23
-    datadog==0.12.0
-    placebo==0.8.1
-    awscli==1.10.10
-    colorama==0.2.4
-    coverage==3.5.2
-    dropbox==7.2.1
-    epydoc==3.0.1
-    ezodf2==0.2.9
-
-.. note::
-
-    pip unfortunately has no flag I can find to require this.
-    One way to do this would be to verify in the install script
-    that what you installed matches the requirements file,
-    by f ex comparing your pip freeze output with the requirements file.
-    That way, you would get an error if you change one package
-    that introduces new dependencies.
-
-----
-
-:id: hashes
-
-.. code::
-
-    beautifulsoup4==4.6.0 --hash=sha256:7015e76bf32f1f574636c4288399a6de66
-    amqp==1.4.7 --hash=sha256:d5ab52b96c11a93324e4f8e5f35fac8a58e69eba0555
-    boto==2.38.0 --hash=sha256:758498c77f16e26b8b61af26f8d0dbb119b713f2d8d
-    boto3==1.6.23 --hash=sha256:f270f058f46aff9208fe29cffee79a46a7020cd186
-    botocore==1.9.23 --hash=sha256:fa84972784e55ae5f89c2d33b1b10b6ba028cb3
-    datadog==0.12.0 --hash=sha256:453facddea3bdce14bfe6518d65db8ec8f1b3309
-    placebo==0.8.1 --hash=sha256:6c15ce4a6be158603550fa211f7ce7cc0327c5e45
-    awscli==1.10.10 --hash=sha256:f8d53c0e3211353a6d4eefb82432996eff535ad4
-    colorama==0.2.4 --hash=sha256:f1a742e49fbb0838ab478339597580d8a5869f9f
-    coverage==3.5.2 --hash=sha256:22f8828c83958efc343666926362eb4a6cb38610
-    dropbox==7.2.1 --hash=sha256:34fe06b735358f4454d59e2ea3dadff63fa03e076
-    epydoc==3.0.1 --hash=sha256:87f191ef04783f8871ce085f8527c8519a74e401c7
-    ezodf2==0.2.9 --hash=sha256:bda2added62f3c3c02c9385fcaaf7a2beed3f3b42a
-
-.. note::
-
-    What you can do with pip is to add hashes to the requirements,
-    if you add one hash, it will require hashes for all packages,
-    effectively making sure no new requirement goes unpinned.
-
-    This makes for huge requirements files with loads of hashes in them.
-    But it also adds extra security.
 
 ----
 
@@ -623,8 +394,154 @@ Gradual CI coverage
 
 ----
 
-Stage 4: Porting
+Stage 3: Porting
 ================
+
+.. note::
+
+    With all the preparation done, now it's the time for the actual work.
+    There are a few strategies you can approach this stage with, let's talk about them.
+
+----
+
+Strategy: One big push!
+=======================
+
++ Takes less time
+
++ Less work in total
+
++ You can aim directly for Python 3 code
+
+- High risk
+
+- Disrupts normal work
+
+.. note::
+
+    In theory you can just dive into it, and start the porting.
+    However, there are some questions to ask before doing that.
+
+----
+
+Question 1. Can you stop adding features?
+=========================================
+
+.. note::
+
+    It depends very much on your business
+    if you can take a time out from adding features to do the porting or not.
+    But it still will take a few weeks at least. Maybe longer.
+    So can you stop adding features and stop firefighting that long?
+
+----
+
+Question 2. How big is your team?
+=================================
+
+.. note::
+
+    The famous mythical man-month remains mythical also with Python 3.
+    Putting 50 developers on porting at the same time will not work.
+    They will end up being blocked by each other,
+    and you can't distribute the work properly.
+    Ten isn't a problem, you can synchronize that, at least if they are
+    in the same office. Maybe even 20, but no more than that.
+    If your system is already split into multiple separate services
+    that run separately, then you can probably put each team on porting their bit separately,
+    so then you are already ahead of the game, but most of these big systems are monoliths.
+
+----
+
+Question 3. Do you have magic?
+==============================
+
+.. note::
+
+    And if some parts of your code is doing deep magic, it can be very hard to port.
+    And then the few of your Python gods that actually understand that code,
+    will be busy with that, when everything else already works.
+    Or, it's so deeply integrated in the code that nobody can actually port their bits
+    until that deep magic is fixed.
+    In both of those cases, everyone that are supposed to port to Python 3 will be blocked.
+
+----
+
+Question 4: Are you willing to risk wasting the time?
+=====================================================
+
+.. note::
+
+    And the last question is if you are willing to take the risk.
+    Maybe, after getting 90% there, you run into a blocker,
+    or you no longer can stop dealing with your customers.
+
+    But if you stop the work at that point,
+    your Python 3 branch will slowly get out of sync with master,
+    and if you pick it up a year later,
+    you will probably find that you have to start over.
+
+    So I don't recommend doing this.
+    If you feel you can move your project to Python 3 in one go,
+    then you would likely have done so already.
+
+----
+
+Strategy: Slow and steady
+=========================
+
++ Low risk
+
++ Doesn't disrupt normal operations
+
+- More work
+
+- You need dual version support
+
+- Longer total time
+
+.. note::
+
+    So porting big projects to Python 3 is usually done slowly and carefully.
+    You will port the code to code that runs on both Python 3 and Python 2,
+    even though you run it on Python 2.
+    And then, one day, you can finally switch and run it on Python 3.
+
+    This strategy does have the distinct risk of not ever being finished, though.
+    If everyone is supposed to do the porting,
+    then the risk is that it becomes Somebody Elses Job.
+    If you put a dedicated team on doing it,
+    others might feel left out.
+
+----
+
+Strategy: Mix it up!
+====================
+
++ Low risk
+
++ Only disrupts normal operation briefly
+
++ Everyone gets onboard and feels involved
+
+- You need dual version support
+
+- Still a slow process
+
+.. note::
+
+    If you have a development team small enough to fit into one office,
+    or a big country house,
+    you can start with a Python 3 sprint for all the developers,
+    but not aim for Python 3, but aim for a Python 2/3 compatible code.
+    That way, when they come back half done,
+    you can switch to have a dedicated team do the last bit,
+    or just have people do it when there is no critical work.
+
+    This is what we did at Shoobx.
+
+    We rented an off season vacation house in southern spain,
+    and put almost all of our developers on moving to Python 3.
 
 ----
 
@@ -708,26 +625,6 @@ Fix fix fix
 
 ----
 
-Don't forget the your dev environment
-=====================================
-
-.. note::
-
-    Do you have scripts to set up a development environment?
-    Or are you using docker? Something else?
-    In any case, that environment should be able to be built under Python 2 or Python 3 or both.
-    Any build scripts you have need to support both versions,
-    any auxilary scripts you have also need to do that.
-
-    At BriteCore we for example have scripts that help you copy test databases,
-    set up docker images etc. It's usually easier if they support Python 2 and Python 3
-    first, so you don't have to keep two environments going.
-    Sometimes the dev help scripts already run in a separate virtualenv,
-    and then you might be able to port them later.
-    But then again, if they are separate, you might want to do them first as practice!
-
-----
-
 Write data migration tests
 ==========================
 
@@ -757,18 +654,28 @@ Test it carefully, manually, with real data
 
 ----
 
-Stage 5: Push to production
+Stage 4: Push to production
 ===========================
 
 Be prepared to fall back if possible!
 
 .. note::
 
+    Make a Python 3 production environment,
+    point your load balancers or whatever you have in front to it,
+    and if customers do things you haven't tested for and everything blows up,
+    point it back to the old environment.
+
     If you have the possibility to move customers one by one, do that.
     Start small, work yourself up.
 
     If you have to migrate the database, you may not be able to go back to Python 2,
+    without data loss,
     so in that case you need to be extra careful.
+
+    Once the errors you find are small and easily fixed,
+    don't fall back to Python 2.
+    Fix them and push to production quickly.
 
 ----
 
@@ -780,28 +687,29 @@ Celebrate!
 
 ----
 
-Clean up
-========
+Stage 5: Clean up
+=================
+
+.. note::
+
+    And then clean up.
+----
 
 .. image:: images/cleanup.jpg
     :width: 100%
 
 .. note::
 
-    And then clean up.
-    Actually, that picture is a misrepresentation.
+    You probably think of cleaning as a chore.
 
 ----
-
-Stage 6: Clean the code
-=======================
 
 .. image:: images/funclean.jpg
     :width: 100%
 
 .. note::
 
-    Because this is the fun bit.
+    But this cleaning definitely feels more like this. It's the fun bit.
     This is where you can go through the code and remove loads of old cruft.
     See it as an opportunity to just prettify the code.
 
@@ -831,5 +739,3 @@ Clean up the code
 
 Questions?
 ==========
-
-britecore.com/careers
