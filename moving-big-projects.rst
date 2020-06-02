@@ -232,7 +232,7 @@ Automatic deployment
 
 ----
 
-Elite Firefighting Assault team
+Elite Firefighting Assault Team
 ===============================
 
 .. note::
@@ -264,14 +264,14 @@ Increase test coverage
     What percentage of test coverage you want is really a matter of opinion.
     100% is awesome, but is likely practically unobtainable.
     90-95% would be my target. You can bridge the gap somewhat by
-    carefully reading all non-covered lines and looking for Python 2 syntax
-    on the non-covered lines,
-    at some point that becomes easier than writing a test.
+    carefully reading all non-covered lines and looking for Python 2 code
+    from time to time.
+    At some point that becomes easier than writing tests.
 
 ----
 
-Mock gotchas
-============
+A warning about Mocking
+=======================
 
 .. note::
 
@@ -282,13 +282,13 @@ Mock gotchas
     But if you do this, then you only test that the function did what you told it to do.
     You don't test that it WORKS. For example, if the API you call changes,
     then the test will still pass.
-    This is obviously a problem with Python 3, because you will effectively
-    be mocking in Python 2 behavior.
+    This is obviously a problem with Python 3,
+    because you will be mocking in Python 2 behavior.
     So this type of testing is useless when porting to Python 3.
     It does little more than checking the syntax,
     and all you need for a syntax check is to import the module.
     If you do this kinds of unit test mocking,
-    you need to have 95% coverage from your integration tests.
+    you need to have that 90 to 95% coverage from your integration tests.
 
 ----
 
